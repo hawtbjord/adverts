@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block mod_content %}
+
+    <h3>Панель модератора</h3>
+
+
+    <li>Личная информация с возможностью редактирования (из пользователя экстенд)</li>
+    </ul>
+
+    {% for advert in advert_list_to_mod %}
+
+        {% for image in advert.image_set.all %}
+            {% if image and forloop.counter == 1 %}
+                <img height="200" src="{{ image.image.url }}"/>
+            {% endif %}
+        {% endfor %}
+        <br>
+
+        <h2><a href='{% url 'advert_detail' pk=advert.pk %}'>{{ advert.title }}</a></h2>
+        <p>Цена: {{ advert.price }} руб.</p>
+        <p>Описание: {{ advert.text|linebreaksbr|truncatechars:"150" }}</p>
+        <p>Категория: {{ advert.category }}</p>
+        <p>Город: {{ advert.city }}</p>
+        <p>Просмотры: {{ advert.views }}</p>
+        <h3> СТАТУС ОБЪЯВЛЕНИЯ: {{ advert.get_state_display }} </h3>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+    {% endfor %}
+
+{% endblock %}

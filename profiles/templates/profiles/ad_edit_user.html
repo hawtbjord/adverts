@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <h3>Редактирование пользователя</h3>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        {% for field in form %}
+            <p> {{ field.label }}:
+                {{ field }}</p>
+        {% endfor %}
+        <td><a href="{% url 'delete_user' pk=user_instance.pk %}">Удалить пользователя</a></td>
+        <br>
+
+        <input type="submit" value="Сохранить">
+    </form>
+{% endblock %}

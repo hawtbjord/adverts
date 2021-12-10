@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h3>Создание учетной записи</h3>
+
+<form method="POST" action="">
+    {% csrf_token %}
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <p> {{ error }} </p>
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+    {% for field in form %}
+        <p>{{ field.label }}
+        {{ field }}
+        </p>
+    {% endfor %}
+    <input type="submit" name="Регистрация" value="Регистрация" >
+</form>
+{% endblock %}

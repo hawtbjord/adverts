@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        {% for field in adv_form %}
+            <p> {{ field.label }}:
+                {{ field }}</p>
+        {% endfor %}
+
+        <p> Измените фотографии при необходимости. Первая будет основной для объявления.</p>
+        {{ img_formset.management_form }}
+        {% for form in img_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+
+        <input type="submit" value="Сохранить">
+    </form>
+
+
+{% endblock %}

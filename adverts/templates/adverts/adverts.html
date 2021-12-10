@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <hr><br>
+    {% for advert in advert_list %}
+        <div align="center">
+
+            {% for image in advert.image_set.all %}
+                {% if image and forloop.counter == 1 %}
+                    <img height="200" src="{{ image.image.url }}"/>
+                {% endif %}
+            {% endfor %}
+
+
+            <br>
+
+            <h2><a href = '{% url 'advert_detail' pk=advert.pk %}'>{{ advert.title }}</a></h2>
+            <p>Цена: {{ advert.price }} руб.</p>
+            <p>Описание: {{ advert.text|linebreaksbr|truncatechars:"150" }}</p>
+            <p>Категория: {{ advert.category }}</p>
+            <p>Город: {{ advert.city }}</p>
+            <p>Просмотры: {{ advert.views }}</p>
+            <br>
+
+
+        </div>
+    {% endfor %}
+{% endblock %}

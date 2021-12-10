@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h3>User profile</h3>
+
+    <ul><h4>Что будет в ЛК пользователя:</h4>
+        <li>Личная информация с возможностью редактирования</li>
+        <li>Список объявлений: активных, черновиков, на проверке, удаленных</li>
+
+        <br>
+        <h4>Объявления</h4>
+        {% for advert in user_advert_list %}
+                {% for image in advert.image_set.all %}
+                    {% if image and forloop.counter == 1 %}
+                        <img height="200" src="{{ image.image.url }}"/>
+                    {% endif %}
+                {% endfor %}
+
+
+                <br>
+
+                <h2><a href='{% url 'advert_detail' pk=advert.pk %}'>{{ advert.title }}</a></h2>
+                <p>Цена: {{ advert.price }} руб.</p>
+                <p>Описание: {{ advert.text|linebreaksbr|truncatechars:"150" }}</p>
+                <p>Категория: {{ advert.category }}</p>
+                <p>Город: {{ advert.city }}</p>
+                <p>Просмотры: {{ advert.views }}</p>
+            <h3> СТАТУС ОБЪЯВЛЕНИЯ: {{ advert.get_state_display }} </h3>
+                <br>
+        {% endfor %}
+
+
+    </ul>
+
+{% endblock %}

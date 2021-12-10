@@ -1,0 +1,40 @@
+<html lang="ru">
+
+<head>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+</head>
+
+<body>
+<header>
+    <div align="center">
+        <a href={% url 'admin:index' %}>Админка</a> | <a href={% url 'home' %}>Главная</a>
+        {% if user.is_authenticated %}
+        |<a href={% url 'create_advert' %}> Разместить объявление </a>
+        {% endif %}
+    </div>
+    <br>
+
+    <div align="center">
+        {% if user.is_authenticated %}
+            <p> Привет, {{ request.user }} </p> </span>
+            <a href="{% url 'profile-page' %}">Личный кабинет</a>
+            <a href="{% url 'logout' %}">Выход</a>
+        {% else %}
+            <a href="{% url 'login' %}">Вход</a> | <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+    </div>
+
+</header>
+
+{% block mod_content %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+</body>
+
+</html>

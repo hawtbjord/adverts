@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h3>Авторизация</h3>
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <p>Email: <input type="text" name="email"></p>
+    <p>Пароль: <input type="text" name="password"></p>
+    <p><input type="submit" name="Войти" value="Войти" ></p>
+    <p><a href="{% url 'reset_password' %}">Забыли пароль?</a></p>
+</form>
+{% endblock %}

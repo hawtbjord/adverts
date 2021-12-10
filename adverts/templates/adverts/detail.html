@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div align="center">
+        <br><br>
+        {% if advert.state in 'AC,RE,' and advert.author == request.user %}
+            <a href="{% url 'edit_advert' advert.id %}">Редактировать объявление</a>
+        {% endif %}
+        {% if advert.state in 'DE,DR' and advert.author == request.user %}
+                <a href="{% url 'edit_advert' advert.id %}">Редактировать объявление</a>
+                <a href="{% url 'send_to_moderator' pk=advert.pk %}">Отправить на проверку</a>
+    {% endif %}
+        <br>
+        {% for image in advert.image_set.all %}
+            {% if forloop.counter == 1 %}
+                <img height="200" src="{{ image.image.url }}"/>
+            {% else %}
+                <img height="100" src="{{ image.image.url }}"/>
+            {% endif %}
+        {% endfor %}
+        <br>
+        <h3>{{ advert.title }}</h3>
+        <p>Цена: {{ advert.price }} руб.</p>
+        <p>Описание: {{ advert.text|linebreaksbr }}</p>
+        <p>Категория: {{ advert.category }}</p>
+        <p>Город: {{ advert.city }}</p>
+        <p>Просмотры: {{ advert.views }}</p>
+
+        {% if advert.state == 'MO' %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                {% for field in mod_note_form %}
+                    <p>{{ field.label }}
+                        {{ field }}
+                    </p>
+                    {% if forloop.last %}
+                        <input type="submit" name="Завершить модерацию" value="Завершить модерацию">
+                    {% endif %}
+
+                {% endfor %}
+
+            </form>
+        {% endif %}
+
+        {% if advert.state == 'RE' and advert.mod_notes.exists %}
+            <br><br>
+            <h5>РЕШЕНИЕ МОДЕРАТОРА</h5>
+            {% for note in advert.mod_notes.all %}
+                <p> {{ note.text }} </p>
+            {% endfor %}
+
+        {% endif %}
+
+        {% if advert.state in 'DR,AC,RE' and advert.author == request.user %}
+            <a href="{% url 'delete_advert' advert.id %}">Удалить объявление</a>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
