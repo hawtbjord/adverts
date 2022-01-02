@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <h3>Редактирование пользователя</h3>
+    <h3>{{ title }}</h3>
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -12,9 +12,18 @@
             <p> {{ field.label }}:
                 {{ field }}</p>
         {% endfor %}
-        <td><a href="{% url 'delete_user' pk=user_instance.pk %}">Удалить пользователя</a></td>
-        <br>
 
+        {% if category_instance %}
+
+            <a href="{% url 'delete_category' slug=category_instance.slug %}">Удалить</a>
+        {% elif user_instance %}
+            <a href="{% url 'delete_user' pk=user_instance.pk %}">Удалить</a>
+
+        {% endif %}
+
+
+        <br>
+        <br>
         <input type="submit" value="Сохранить">
     </form>
 {% endblock %}

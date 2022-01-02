@@ -7,6 +7,9 @@ from PIL import Image as PILImage
 from django.core.files.images import get_image_dimensions
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.utils.text import slugify
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 from resizeimage import resizeimage
 from django_fsm import FSMField, transition
 from django.urls import reverse
@@ -33,13 +36,16 @@ class Advert(models.Model):
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор')
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категория')
+    category = TreeForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категория')
+    region = models.ForeignKey('Region', on_delete=models.CASCADE, verbose_name='Регион')
     city = models.ForeignKey('City', on_delete=models.CASCADE, verbose_name='Город')
     state = FSMField(default=STATES[0][0], choices=STATES)
 
     class Meta:
         verbose_name = 'Объявление'
         verbose_name_plural = 'Объявления'
+
+
 
     def __str__(self):
         return self.title
@@ -128,21 +134,26 @@ class Image(models.Model):
         return self.advert.title
 
 
-class Category(models.Model):
-    parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank=True, null=True)
-    name = models.CharField(max_length=50)
-    description = models.TextField(max_length=500)
-    slug = models.SlugField(max_length=50, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class Category(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    slug = models.SlugField(max_length=50, null=True, blank=True)
+    description = models.TextField(max_length=500, null=True, blank=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    class Meta:
+        verbose_name_plural = 'Категории'
 
     def __str__(self):
         return self.name
 
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-        ordering = ['name']
+    def save(self, *args, **kwargs):
+        value = self.name
+        if not self.slug:
+            self.slug = slugify(value, allow_unicode=True)
+        super().save(*args, **kwargs)
 
 
 class City(models.Model):

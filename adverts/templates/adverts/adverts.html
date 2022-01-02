@@ -1,7 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <hr><br>
+    <hr>
+    <br>
+
+    {#        <form class="form" action="{% url 'home' %}" method="get">#}
+    {#            <div class="form__field">#}
+    {#                <input class="input input--text" id="formInput#search" type="find_adverts" name="find_adverts"#}
+    {#                       value ="{{ find_adverts }}", placeholder="                               Что ищете?" size="40">#}
+    {#            </div>#}
+    {#            <input class="btn btn--sub btn--lg" type="submit" value="Искать"/>#}
+    {#        </form>#}
+
+    <div>
+
+        <form method="get" id="filterForm" data-cities-url="{% url 'ajax_load_cities' %}">
+            {{ myFilter.form }}
+
+            <button type="submit">Искать</button>
+        </form>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $("#id_region").change(function () {
+            var url = $("#filterForm").attr("data-cities-url");  // get the url of the `load_cities` view
+            var regionId = $(this).val();  // get the selected country ID from the HTML input
+
+            $.ajax({                       // initialize an AJAX request
+                url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'region': regionId       // add the country id to the GET parameters
+                },
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $("#id_city").html(data);  // replace the contents of the city input with the data that came from the server
+                }
+            });
+
+        });
+    </script>
+
+
+
+
+
+    <hr>
+    <br>
     {% for advert in advert_list %}
         <div align="center">
 
@@ -14,7 +59,7 @@
 
             <br>
 
-            <h2><a href = '{% url 'advert_detail' pk=advert.pk %}'>{{ advert.title }}</a></h2>
+            <h2><a href='{% url 'advert_detail' pk=advert.pk %}'>{{ advert.title }}</a></h2>
             <p>Цена: {{ advert.price }} руб.</p>
             <p>Описание: {{ advert.text|linebreaksbr|truncatechars:"150" }}</p>
             <p>Категория: {{ advert.category }}</p>

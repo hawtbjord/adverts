@@ -1,11 +1,11 @@
-from .models import Advert, Image, ModNote
+from .models import Advert, Image, ModNote, Category
 from django.forms import ModelForm
 
 
 class AdvertForm(ModelForm):
     class Meta:
         model = Advert
-        fields = ['category', 'city', 'title', 'text', 'price']
+        fields = ['category', 'region', 'city', 'title', 'text', 'price']
 
 
 class AdvertImagesForm(ModelForm):
@@ -18,3 +18,4 @@ class ModNoteForm(ModelForm):
     class Meta:
         model = ModNote
         fields = ['resolution', 'text']
+

@@ -2,7 +2,7 @@
 
 
 {% block content %}
-<h3>Создание учетной записи</h3>
+<h3>{{ title }}</h3>
 
 <form method="POST" action="">
     {% csrf_token %}
@@ -18,6 +18,6 @@
         {{ field }}
         </p>
     {% endfor %}
-    <input type="submit" name="Регистрация" value="Регистрация" >
+    <input type="submit" name="Создать" value="Создать" >
 </form>
 {% endblock %}

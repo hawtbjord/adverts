@@ -4,10 +4,13 @@
 
     <h3>Панель администратора</h3>
 
-    <li>Панели CRUD справочников; панели CRUD пользователей</li>
     <br>
-    <a href="{% url 'create_user'%}">Создать пользователя</a>
 
+    <h3> ==Пользователи==</h3>
+
+    <a href="{% url 'create_user'%}">Создать пользователя</a>
+    <br>
+    <br>
     <div>
 
     <table class="table">
@@ -44,9 +47,96 @@
                     {% endfor %}
                 </tbody>
             </table>
+    <h3> =================</h3>
     </div>
 
 
+
+    <h3> ==Категории объявлений==</h3>
+
+    <a href="{% url 'create_category'%}">Добавить категорию</a>
+    <br>
+    <br>
+    <div>
+
+    <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">Категория</th>
+                    <th scope="col">Родительская категория</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in advert_categories %}
+                        <tr>
+                        <td>{{cat.name}}</td>
+                        <td>{{cat.parent.name}}</td>
+                        <td><a href="{% url 'edit_category' slug=cat.slug %}">Редактировать</a></td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    <h3> =================</h3>
+    </div>
+
+        <h3> ==Справочник регионов==</h3>
+
+    <a href="{% url 'create_region'%}">Добавить регион</a>
+    <br>
+    <br>
+    <div>
+
+    <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">Регион</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for region in regions %}
+                        <tr>
+                        <td>{{region.name}}</td>
+                        <td><a href="{% url 'edit_region' pk=region.pk %}">Редактировать</a></td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    <h3> =================</h3>
+    </div>
+
+
+        <h3> ==Справочник городов==</h3>
+
+    <a href="{% url 'create_city'%}">Добавить город</a>
+    <br>
+    <br>
+    <div>
+
+    <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">Город</th>
+                    <th scope="col">Регион</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for city in cities %}
+                        <tr>
+                        <td>{{city.name}}</td>
+                        <td>{{city.region.name}}</td>
+                        <td><a href="{% url 'edit_city' pk=city.pk %}">Редактировать</a></td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    <h3> =================</h3>
+    </div>
 
 
 {% endblock %}

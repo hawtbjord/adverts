@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'captcha',
     'django_fsm',
+    'django_filters',
+    'mptt',
 ]
 
 MIDDLEWARE = [

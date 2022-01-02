@@ -2,15 +2,45 @@
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import modelformset_factory
+from django.db.models import Q
 
 from .forms import AdvertForm, AdvertImagesForm, ModNoteForm
-from .models import Advert, Image
+from .models import Advert, Image, City, Category
+from .filters import AdvertFilter
+
+
+def index_view(request):
+    categories = Category.objects.filter(parent_id=None)
+
+    return render(request, 'adverts/index.html', {'categories': categories})
 
 
 def index(request):
-    advert_list = Advert.objects.filter(state='AC').order_by('-created_at')
-    context = {'advert_list': advert_list}
+    print(request)
+    advert_list = Advert.objects.filter(
+        state='AC').order_by(
+        '-created_at')
+
+    myFilter = AdvertFilter(request.GET, queryset=advert_list)
+    print(myFilter.qs)
+    advert_list = myFilter.qs
+    advert_list.filter()
+
+    cats = Category.objects.get(pk=7).get_descendants(include_self=True)
+    advert_list.filter(category__in=cats)
+    print(cats.filter())
+    context = {'advert_list': advert_list, 'myFilter': myFilter}
     return render(request, 'adverts/adverts.html', context)
+
+
+def show_categories(request):
+    return render(request, "adverts/categories.html", {'categories': Category.objects.all()})
+
+
+def load_cities(request):
+    region_id = request.GET.get('region')
+    cities = City.objects.filter(region_id=region_id)
+    return render(request, 'adverts/adverts_cities.html', {'cities': cities})
 
 
 def detail(request, pk):
@@ -18,7 +48,8 @@ def detail(request, pk):
     if advert.state in ('DR', 'RE', 'DE', 'MO') and advert.author == request.user:
         return render(request, 'adverts/detail.html', {'advert': advert})
 
-    elif advert.state == 'MO' and request.user.groups.filter(name='Модераторы'):
+    elif advert.state == 'MO' and (
+            request.user.groups.filter(name='Модераторы') or request.user.groups.filter(name='Администраторы')):
         mod_note_form = ModNoteForm()
 
         if request.method == 'POST':
@@ -95,7 +126,7 @@ def edit(request, pk):
 
             if adv_form.is_valid() and img_formset.is_valid():
                 adv_obj = adv_form.save()
-                if adv_obj.state in ('AC','RE','DE'):
+                if adv_obj.state in ('AC', 'RE', 'DE'):
                     adv_obj.save_draft()
                 adv_obj.save()
                 print(img_formset.cleaned_data)
