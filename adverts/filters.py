@@ -1,6 +1,7 @@
 import django_filters
 from django_filters import NumberFilter, CharFilter
 from django.db.models import Q
+from django import forms
 
 from .models import *
 
@@ -9,6 +10,10 @@ class AdvertFilter(django_filters.FilterSet):
     price_from = NumberFilter(field_name='price', lookup_expr='gte')
     price_to = NumberFilter(field_name='price', lookup_expr='lte')
     title = CharFilter(field_name='title', lookup_expr='icontains')
+    categories = django_filters.ModelMultipleChoiceFilter(queryset=Category.objects.all(),
+                                                          field_name='category',
+                                                          label='Категория',
+                                                          widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = Advert

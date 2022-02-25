@@ -23,12 +23,10 @@ def index(request):
 
     myFilter = AdvertFilter(request.GET, queryset=advert_list)
     print(myFilter.qs)
+    print(request.GET)
     advert_list = myFilter.qs
     advert_list.filter()
 
-    cats = Category.objects.get(pk=7).get_descendants(include_self=True)
-    advert_list.filter(category__in=cats)
-    print(cats.filter())
     context = {'advert_list': advert_list, 'myFilter': myFilter}
     return render(request, 'adverts/adverts.html', context)
 
