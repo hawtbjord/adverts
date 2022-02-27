@@ -16,16 +16,15 @@ def index_view(request):
 
 
 def index(request):
-    print(request)
+    # print(request)
     advert_list = Advert.objects.filter(
         state='AC').order_by(
         '-created_at')
-
     myFilter = AdvertFilter(request.GET, queryset=advert_list)
-    print(myFilter.qs)
-    print(request.GET)
+    # print(myFilter.qs)
     advert_list = myFilter.qs
-    advert_list.filter()
+    #print(myFilter.qs)
+    #advert_list.filter()
 
     context = {'advert_list': advert_list, 'myFilter': myFilter}
     return render(request, 'adverts/adverts.html', context)
